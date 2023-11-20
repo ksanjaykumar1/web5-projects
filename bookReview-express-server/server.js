@@ -2,6 +2,8 @@ import 'express-async-errors';
 import express from 'express';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import bookReview from './routes/bookReview.js';
+
 dotenv.config();
 
 const { PORT } = process.env;
@@ -16,3 +18,11 @@ app.use(
     ':method :url :status :response-time ms - :res[content-length] :body - :req[content-length]'
   )
 );
+app.use('/api/v1/bookReview', bookReview);
+const start = () => {
+  app.listen(PORT, () => {
+    console.log(`server running on ${PORT}`);
+  });
+};
+
+start();
