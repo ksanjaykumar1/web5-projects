@@ -3,13 +3,15 @@ import {
   addBookReview,
   deleteBookReviewByRecordId,
   getAllBookReviews,
+  getBookReviewByRecordId,
   updateBookReviewByRecordId,
-} from '../controllers/bookReview';
+} from '../controllers/bookReview.js';
 const router = express.Router();
 
 router.route('/').get(getAllBookReviews).post(addBookReview);
 router
-  .route('/:id').get
+  .route('/:recordId')
+  .get(getBookReviewByRecordId)
   .patch(updateBookReviewByRecordId)
   .delete(deleteBookReviewByRecordId);
 export default router;
