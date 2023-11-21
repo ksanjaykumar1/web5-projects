@@ -3,6 +3,8 @@ import express from 'express';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import bookReview from './routes/bookReview.js';
+import notFound from './middleware/notFound.js';
+import errorHandler from './middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -19,6 +21,10 @@ app.use(
   )
 );
 app.use('/api/v1/bookReview', bookReview);
+
+app.use(notFound);
+app.use(errorHandler);
+
 const start = () => {
   app.listen(PORT, () => {
     console.log(`server running on ${PORT}`);
