@@ -18,14 +18,24 @@ export const getBookReviewByRecordId = async (req, res) => {
   res.status(StatusCodes.OK).json({ record });
 };
 export const addBookReview = async (req, res) => {
-  const { bookName, authorName, datePublished, genre, identifier } = req.body;
-  const record = await addReview({
+  const {
     bookName,
     authorName,
     datePublished,
     genre,
     identifier,
-  });
+    publishReview,
+  } = req.body;
+  const record = await addReview(
+    {
+      bookName,
+      authorName,
+      datePublished,
+      genre,
+      identifier,
+    },
+    publishReview
+  );
   res.status(StatusCodes.OK).json({ record });
 };
 

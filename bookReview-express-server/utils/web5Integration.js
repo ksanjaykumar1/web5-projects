@@ -32,13 +32,10 @@ async function getReviews() {
   return recordData;
 }
 
-const addReview = async ({
-  bookName,
-  authorName,
-  datePublished,
-  genre,
-  identifier,
-}) => {
+const addReview = async (
+  { bookName, authorName, datePublished, genre, identifier },
+  publish
+) => {
   // check if review already exists
   const review = {
     '@type': 'Book',
@@ -56,7 +53,7 @@ const addReview = async ({
     message: {
       schema: reviewSchema.uri,
       dataFormat: 'application/json',
-      published: true,
+      published: publish,
     },
   });
 
