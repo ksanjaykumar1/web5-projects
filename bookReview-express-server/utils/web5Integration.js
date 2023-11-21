@@ -1,4 +1,5 @@
 import { Web5 } from '@web5/api';
+import { NotFoundError } from '../errors/index.js';
 
 const { web5, did: userDid } = await Web5.connect();
 
@@ -24,8 +25,7 @@ async function getReviews() {
     response.records.map(async (record) => {
       const text = await record.data.text();
       const jsonObject = JSON.parse(text);
-      console.log(jsonObject);
-      return jsonObject;
+      return { ...jsonObject, recordId: record._recordId };
     })
   );
   return recordData;
@@ -78,7 +78,6 @@ const getAllBookReviewsByDid = async (did) => {
   return records;
 };
 const getBookReviewById = async (recordId) => {
-  console.log(recordId);
   const { record } = await web5.dwn.records.read({
     message: {
       filter: {
@@ -86,8 +85,30 @@ const getBookReviewById = async (recordId) => {
       },
     },
   });
+  if (!record) {
+    throw new NotFoundError(`No such review with record Id ${recordId}`);
+  }
   const text = await record.data.text();
   return JSON.parse(text);
+};
+const updateByReviewByRecordID = async (recordId, updateData) => {
+  const { record } = await web5.dwn.records.read({
+    message: {
+      filter: {
+        recordId,
+      },
+    },
+  });
+  if (!recordId) {
+    throw new NotFoundError(`No such review with record Id ${recordId}`);
+  }
+  const text = await record.data.text();
+  const review = JSON.parse(text);
+  const updatedReview = { ...review, ...updateData };
+
+  // Update the record
+  const response = await record.update({ data: updatedReview });
+  return response;
 };
 export {
   web5,
@@ -97,4 +118,5 @@ export {
   getAllBookReviewsByDid,
   getBookReviewById,
   addReview,
+  updateByReviewByRecordID,
 };
