@@ -23,6 +23,7 @@ async function getReviews() {
   });
   let recordData = await Promise.all(
     response.records.map(async (record) => {
+      console.log(record);
       const text = await record.data.text();
       const jsonObject = JSON.parse(text);
       return { ...jsonObject, recordId: record._recordId };
@@ -110,6 +111,22 @@ const updateByReviewByRecordID = async (recordId, updateData) => {
   const response = await record.update({ data: updatedReview });
   return response;
 };
+
+const deleteByReviewByRecordID = async (recordId) => {
+  const { record } = await web5.dwn.records.read({
+    message: {
+      filter: {
+        recordId: recordId,
+      },
+    },
+  });
+  if (!record) {
+    throw new NotFoundError(`No such review with record Id ${recordId}`);
+  }
+  // Delete the record
+  const deleteResult = await record.delete();
+  return deleteResult;
+};
 export {
   web5,
   userDid,
@@ -119,4 +136,5 @@ export {
   getBookReviewById,
   addReview,
   updateByReviewByRecordID,
+  deleteByReviewByRecordID,
 };

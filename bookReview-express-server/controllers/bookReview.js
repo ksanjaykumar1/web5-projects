@@ -3,6 +3,7 @@ import {
   getBookReviewById,
   addReview,
   updateByReviewByRecordID,
+  deleteByReviewByRecordID,
 } from '../utils/web5Integration.js';
 
 import { StatusCodes } from 'http-status-codes';
@@ -34,4 +35,8 @@ export const updateBookReviewByRecordId = async (req, res) => {
   const record = await updateByReviewByRecordID(recordId, updateReview);
   res.status(StatusCodes.OK).json({ record });
 };
-export const deleteBookReviewByRecordId = async (req, res) => {};
+export const deleteBookReviewByRecordId = async (req, res) => {
+  const recordId = req.params.recordId;
+  const record = await deleteByReviewByRecordID(recordId);
+  res.status(StatusCodes.OK).json({ record });
+};
