@@ -86,8 +86,14 @@ const getBookReviewById = async (recordId) => {
   if (!record) {
     throw new NotFoundError(`No such review with record Id ${recordId}`);
   }
+  // console.log(record);
   const text = await record.data.text();
-  return JSON.parse(text);
+  // return record;
+  return {
+    ...JSON.parse(text),
+    recordId: record._recordId,
+    publish: record.published || false,
+  };
 };
 const updateByReviewByRecordID = async (recordId, updateData) => {
   const { record } = await web5.dwn.records.read({
@@ -106,6 +112,21 @@ const updateByReviewByRecordID = async (recordId, updateData) => {
 
   // Update the record
   const response = await record.update({ data: updatedReview });
+  return response;
+};
+
+const publishByUpdating = async (recordId) => {
+  const { record } = await web5.dwn.records.read({
+    message: {
+      filter: {
+        recordId,
+      },
+    },
+  });
+  if (!recordId) {
+    throw new NotFoundError(`No such review with record Id ${recordId}`);
+  }
+  const response = await record.update({ published: true });
   return response;
 };
 
@@ -134,4 +155,5 @@ export {
   addReview,
   updateByReviewByRecordID,
   deleteByReviewByRecordID,
+  publishByUpdating,
 };
